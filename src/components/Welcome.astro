@@ -12,9 +12,6 @@ const session = await auth.api.getSession({
 	<img id="background" src={background.src} alt="" fetchpriority="high" />
 	<main>
 		<section id="hero">
-			<a href="https://astro.build">
-				<img src={astroLogo.src} width="115" height="48" alt="Astro Homepage" />
-			</a>
 			
 			{session?.user ? (
 				<div class="auth-container">
@@ -26,7 +23,7 @@ const session = await auth.api.getSession({
 			)}
 
 			<h1>
-				Test
+				discord id: {session?.user?.id}
 			</h1>
 			
 		</section>
