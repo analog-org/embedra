@@ -9,4 +9,9 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   integrations: [react()],
   output: 'server', // Enable SSR mode
+  vite: {
+    plugins: [tailwindcss()],
+  },
 });
+
+
