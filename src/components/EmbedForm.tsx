@@ -21,7 +21,6 @@ import {
   AccordionItem,
   AccordionTrigger
 } from "./ui/accordion";
-import { EmbedPreviewModal } from "./EmbedPreviewModal"
 
 // Discord embed type definitions
 interface EmbedFooter {
