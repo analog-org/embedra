@@ -23,6 +23,9 @@ import {
 } from "./ui/accordion";
 import { ColorPicker } from "./ui/color-picker";
 
+// Import the DateTimePicker component
+import { DateTimePicker } from "./ui/date-time-picker";
+
 
 
 // Discord embed type definitions
@@ -207,6 +210,7 @@ export function EmbedForm() {
               <AccordionTrigger>General</AccordionTrigger>
               <AccordionContent className="space-y-4">
                 <div className="grid gap-4">
+                </div>
                   <div className="grid gap-2">
                     <Label htmlFor={`title-${embedIndex}`}>Title</Label>
                     <Input
@@ -265,27 +269,17 @@ export function EmbedForm() {
                   </div>
 
                   <div className="grid gap-2">
-                    <Label htmlFor={`timestamp-${embedIndex}`}>
-                      Timestamp
-                    </Label>
-                    <Input
-                      id={`timestamp-${embedIndex}`}
-                      type="datetime-local"
-                      value={
-                        embed.timestamp
-                          ? new Date(embed.timestamp)
-                              .toISOString()
-                              .slice(0, 16)
-                          : ""
-                      }
-                      onChange={(e) => {
-                        const date = e.target.value
-                          ? new Date(e.target.value).toISOString()
-                          : undefined;
-                        updateEmbed(embedIndex, "timestamp", date);
-                      }}
-                    />
-                  </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor={`timestamp-${embedIndex}`}>
+                        Timestamp
+                      </Label>
+                      <DateTimePicker
+                        date={embed.timestamp ? new Date(embed.timestamp) : undefined}
+                        setDate={(date) => {
+                          updateEmbed(embedIndex, "timestamp", date ? date.toISOString() : undefined);
+                        }}
+                      />
+                    </div>
                 </div>
               </AccordionContent>
             </AccordionItem>
