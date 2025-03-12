@@ -21,6 +21,7 @@ import {
   AccordionItem,
   AccordionTrigger
 } from "./ui/accordion";
+import { ColorPicker } from "./ui/color-picker";
 
 
 
@@ -245,24 +246,21 @@ export function EmbedForm() {
                       />
                     </div>
 
+                    
                     <div className="grid gap-2">
                       <Label>Color</Label>
-                      <div className="flex gap-2 items-center">
-                        <div
-                          className="w-10 h-10 rounded border"
-                          style={{
-                            backgroundColor: getHexColor(embed.color),
-                          }}
-                        />
-                        <Input
-                          id={`color-${embedIndex}`}
-                          type="color"
-                          value={getHexColor(embed.color)}
-                          onChange={(e) =>
-                            handleColorChange(embedIndex, e.target.value)
-                          } 
-                        />
-                      </div>
+                      <ColorPicker
+                        value={getHexColor(embed.color)}
+                        onChange={(value) => {
+                          // Convert hex color to integer
+                          try {
+                            const colorInt = parseInt(value.replace("#", ""), 16);
+                            updateEmbed(embedIndex, "color", colorInt);
+                          } catch (e) {
+                            console.error("Invalid color format");
+                          }
+                        }}
+                      />
                     </div>
                   </div>
 
