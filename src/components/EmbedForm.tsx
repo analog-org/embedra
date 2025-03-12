@@ -21,7 +21,8 @@ import {
   AccordionItem,
   AccordionTrigger
 } from "./ui/accordion";
-import { ColorPicker } from "./ui/color-picker";
+
+
 
 // Discord embed type definitions
 interface EmbedFooter {
@@ -148,10 +149,10 @@ export function EmbedForm() {
     setEmbeds(newEmbeds);
   };
 
-  const handleColorChange = (index: number, value: string) => {
+  const handleColorChange = (index: number, value: any) => {
     // Convert hex color to integer
     try {
-      const colorInt = parseInt(value.replace("#", ""), 16);
+      const colorInt = parseInt(value.hex.replace("#", ""), 16);
       updateEmbed(index, "color", colorInt);
     } catch (e) {
       console.error("Invalid color format");
@@ -253,9 +254,13 @@ export function EmbedForm() {
                             backgroundColor: getHexColor(embed.color),
                           }}
                         />
-                        <ColorPicker
-                          color={getHexColor(embed.color)}
-                          onChange={(newColor) => handleColorChange(embedIndex, newColor)}
+                        <Input
+                          id={`color-${embedIndex}`}
+                          type="color"
+                          value={getHexColor(embed.color)}
+                          onChange={(e) =>
+                            handleColorChange(embedIndex, e.target.value)
+                          } 
                         />
                       </div>
                     </div>
@@ -569,7 +574,7 @@ export function EmbedForm() {
   </div>
 
   <div className="mt-8">
-    <Button variant="default" onClick={() => exportAllEmbeds()}>
+    <Button variant="default" onClick={() => exportAllEmbeds(embeds)}>
       Export All Embeds
     </Button>
   </div>
