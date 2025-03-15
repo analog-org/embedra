@@ -1,4 +1,7 @@
-import type { APIMessage } from 'discord-api-types/v10';
+import type { APIMessage, APIUser } from 'discord-api-types/v10';
+import { MessageFlags } from 'discord-api-types/v10';
+import { useStore } from '@nanostores/react';
+import { embedsStore } from '../store/embedStore';
 import {
   DiscordAttachment,
   DiscordAttachments,
@@ -18,11 +21,38 @@ import type {
 } from 'discord-api-types/v10';
 import { ButtonStyle } from 'discord-api-types/v10';
 
-interface DiscordPreviewProps {
-  message: APIMessage;
-}
+const mockUser: APIUser = {
+  id: '1234567890',
+  username: 'Preview Bot',
+  discriminator: '0000',
+  global_name: 'Preview Bot',
+  avatar: null,
+  bot: true,
+  system: false,
+  verified: true
+};
 
-export function DiscordPreview({ message }: DiscordPreviewProps) {
+export function DiscordPreview() {
+  const embeds = useStore(embedsStore);
+  
+  const message: APIMessage = {
+    id: '1',
+    type: 0,
+    content: '',
+    channel_id: '1',
+    author: mockUser,
+    timestamp: new Date().toISOString(),
+    edited_timestamp: null,
+    tts: false,
+    mention_everyone: false,
+    mentions: [],
+    mention_roles: [],
+    attachments: [],
+    embeds,
+    pinned: false,
+    flags: MessageFlags.Ephemeral,
+  };
+
   const renderEmbedFields = (fields?: APIEmbedField[]) => {
     if (!fields?.length) return null;
     return (
