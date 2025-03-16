@@ -24,6 +24,7 @@ import { DateTimePicker } from "./ui/date-time-picker";
 import { useStore } from '@nanostores/react';
 import { embedsStore, addEmbed, removeEmbed, updateEmbed, addField, updateField, removeField, moveEmbed } from "../store/embedStore";
 import type { APIEmbed } from 'discord-api-types/v10'; // Use imported types
+import { DatePicker } from "./ui/date-picker";
 
 export function EmbedForm() {
   const embeds = useStore(embedsStore);
@@ -141,7 +142,7 @@ export function EmbedForm() {
                         <Label htmlFor={`timestamp-${embedIndex}`}>
                           Timestamp
                         </Label>
-                        <DateTimePicker
+                        <DatePicker
                           date={embed.timestamp ? new Date(embed.timestamp) : undefined}
                           
                           setDate={(date) => {

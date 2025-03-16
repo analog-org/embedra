@@ -3,11 +3,18 @@ import type { APIEmbed } from 'discord-api-types/v10';
 
 // Initial embed state
 const initialEmbed: APIEmbed = {
-  title: "",
-  description: "",
+  title: "Test",
+  description: "This is an example embed",
   color: 0x0F52BA, // Sapphire blue color from the example
-  fields: [],
-  timestamp: undefined
+  fields: [{
+    name: "Field 1",
+    value: "Value 1",
+    inline: false
+  }],
+  timestamp: new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }),
+  footer: {
+    text: "Example footer"
+  }
 };
 
 // Create the store

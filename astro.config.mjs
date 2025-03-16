@@ -16,7 +16,7 @@ export default defineConfig({
       include: ["**/react/*"],
     }),
   ],
-  output: "server", // Enable SSR mode
+  output: "static", // Enable SSR mode
   vite: {
     plugins: [tailwindcss()],
   },

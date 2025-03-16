@@ -24,6 +24,7 @@ import type {
 } from 'discord-api-types/v10';
 import React from 'react';
 import { ButtonStyle } from 'discord-api-types/v10';
+import { DayPicker } from "react-day-picker"
 
 const mockUser: APIUser = {
   id: '1234567890',
@@ -50,7 +51,7 @@ export function DiscordPreview() {
     content: '',
     channel_id: '1',
     author: mockUser,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }),
     edited_timestamp: null,
     tts: false,
     mention_everyone: false,
@@ -77,9 +78,7 @@ export function DiscordPreview() {
       >
         {embed.description && (
           <DiscordEmbedDescription slot="description">
-            {embed.description.split('\n').map((line, i) => 
-              line ? <p key={i}>{line}</p> : <br key={i} />
-            )}
+            {embed.description}
           </DiscordEmbedDescription>
         )}
         
