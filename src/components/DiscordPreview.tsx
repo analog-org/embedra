@@ -96,15 +96,7 @@ export function DiscordPreview() {
       >
         {embed.description && (
           <DiscordEmbedDescription slot="description">
-            {(() => {
-              const lines = embed.description.split('\n');
-              return lines.map((line, i) => (
-                <span key={i}>
-                  {line}
-                  {i < lines.length - 1 && <br />}
-                </span>
-              ));
-            })()}
+            {embed.description}
           </DiscordEmbedDescription>
         )}
 
@@ -133,7 +125,7 @@ export function DiscordPreview() {
             {embed.footer?.text}
           </DiscordEmbedFooter>
         )}
-      </DiscordEmbed>
+        </DiscordEmbed>
     );
   };
 
@@ -248,9 +240,7 @@ export function DiscordPreview() {
         {message.content}
         
         {/* Render embeds */}
-        {message.embeds?.map((embed, index) => (
-          <div key={`embed-${index}`}>{renderEmbed(embed)}</div>
-        ))}
+        {message.embeds?.map((embed, index) => renderEmbed(embed))}
 
         {/* Render attachments */}
         {message.attachments?.length > 0 && (
