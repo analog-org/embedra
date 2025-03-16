@@ -120,7 +120,7 @@ export function DiscordPreview() {
           <DiscordEmbedFooter
             slot="footer"
             footerImage={embed.footer?.icon_url}
-            timestamp={embed.timestamp ? new Date(embed.timestamp) : undefined}
+            timestamp={embed.timestamp ? new Date(embed.timestamp) : new Date()}
           >
             {embed.footer?.text}
           </DiscordEmbedFooter>
