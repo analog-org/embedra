@@ -7,7 +7,7 @@ const initialEmbed: APIEmbed = {
   description: "",
   color: 0x0F52BA, // Sapphire blue color from the example
   fields: [],
-  timestamp: new Date().toISOString() // Initialize with current timestamp
+  timestamp: undefined
 };
 
 // Create the store
@@ -15,7 +15,7 @@ export const embedsStore = atom<APIEmbed[]>([initialEmbed]);
 
 // Store actions
 export function addEmbed() {
-  embedsStore.set([...embedsStore.get(), { ...initialEmbed, timestamp: new Date().toISOString() }]);
+  embedsStore.set([...embedsStore.get(), { ...initialEmbed }]);
 }
 
 export function removeEmbed(index: number) {

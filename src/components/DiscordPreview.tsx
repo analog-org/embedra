@@ -22,6 +22,7 @@ import type {
   APIMessageActionRowComponent,
   APIButtonComponent
 } from 'discord-api-types/v10';
+import React from 'react';
 import { ButtonStyle } from 'discord-api-types/v10';
 
 const mockUser: APIUser = {
@@ -39,11 +40,8 @@ export function DiscordPreview() {
   const embeds = useStore(embedsStore);
 
   const getHexColor = (colorInt?: number) => {
-    // Discord embed colors are stored as decimal integers but displayed as hex with #
-    if (colorInt === undefined) return "#0069ff";
-    const hex = colorInt.toString(16).padStart(6, "0").toLowerCase();
-    console.log('Color conversion:', { colorInt, hex });
-    return `#${hex}`;
+    if (!colorInt) return undefined;
+    return `#${colorInt.toString(16).padStart(6, "0")}`;
   };
   
   const message: APIMessage = {
@@ -64,23 +62,6 @@ export function DiscordPreview() {
     flags: MessageFlags.Ephemeral,
   };
 
-  const renderEmbedFields = (fields?: APIEmbedField[]) => {
-    if (!fields?.length) return null;
-    return (
-      <DiscordEmbedFields>
-        {fields.map((field, index) => (
-          <DiscordEmbedField
-            key={index}
-            fieldTitle={field.name}
-            inline={field.inline}
-          >
-            {field.value}
-          </DiscordEmbedField>
-        ))}
-      </DiscordEmbedFields>
-    );
-  };
-
   const renderEmbed = (embed: APIEmbed) => {
     return (
       <DiscordEmbed
@@ -96,10 +77,12 @@ export function DiscordPreview() {
       >
         {embed.description && (
           <DiscordEmbedDescription slot="description">
-            {embed.description}
+            {embed.description.split('\n').map((line, i) => 
+              line ? <p key={i}>{line}</p> : <br key={i} />
+            )}
           </DiscordEmbedDescription>
         )}
-
+        
         {embed.fields && embed.fields.length > 0 && (
           <DiscordEmbedFields slot="fields">
             {embed.fields.map((field, index) => (
@@ -108,24 +91,23 @@ export function DiscordPreview() {
                 fieldTitle={field.name}
                 inline={field.inline}
               >
-                {field.value?.split('\n').map((line, i) => 
-                  line ? <span key={i}>{line}</span> : <br key={i} />
+                {field.value.split('\n').map((line, i) => 
+                  line ? <p key={i}>{line}</p> : <br key={i} />
                 )}
               </DiscordEmbedField>
             ))}
           </DiscordEmbedFields>
         )}
-
-        {(embed.footer || embed.timestamp) && (
+        
           <DiscordEmbedFooter
             slot="footer"
             footerImage={embed.footer?.icon_url}
-            timestamp={embed.timestamp ? new Date(embed.timestamp) : new Date()}
+            timestamp={embed.timestamp}
           >
             {embed.footer?.text}
           </DiscordEmbedFooter>
-        )}
-        </DiscordEmbed>
+    
+      </DiscordEmbed>
     );
   };
 
@@ -240,7 +222,11 @@ export function DiscordPreview() {
         {message.content}
         
         {/* Render embeds */}
-        {message.embeds?.map((embed, index) => renderEmbed(embed))}
+        {message.embeds?.map((embed, index) => (
+          <React.Fragment key={`embed-${index}`}>
+            {renderEmbed(embed)}
+          </React.Fragment>
+        ))}
 
         {/* Render attachments */}
         {message.attachments?.length > 0 && (

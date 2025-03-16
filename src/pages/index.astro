@@ -9,9 +9,9 @@ import "../styles/global.css";
   <div class="container mx-auto py-8">
     <h1 class="text-3xl font-bold mb-8 text-center">Discord Embed Builder</h1>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-      <EmbedForm client:load />
+      <EmbedForm client:only="react" />
       <div class="bg-[#313338] rounded-lg p-4">
-        <DiscordPreview client:load />
+        <DiscordPreview client:only="react" />
       </div>
     </div>
   </div>

@@ -58,7 +58,9 @@ const ColorPicker = React.forwardRef<HTMLDivElement, ColorPickerProps>(
               />
               <Input
                 value={color.hex}
+                onChange={(e) => handleChange({ ...color, hex: e.target.value })}
                 className="pl-10"
+                readOnly
               />
             </div>
           </PopoverTrigger>

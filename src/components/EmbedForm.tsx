@@ -142,16 +142,14 @@ export function EmbedForm() {
                           Timestamp
                         </Label>
                         <DateTimePicker
-                          date={
-                            embed.timestamp
-                              ? new Date(embed.timestamp)
-                              : undefined
-                          }
+                          date={embed.timestamp ? new Date(embed.timestamp) : undefined}
+                          
                           setDate={(date) => {
                             updateEmbed(
                               embedIndex,
                               "timestamp",
-                              date ? date.toISOString() : undefined
+                              // this date should show up as mm/dd/yyyy 
+                              date ? date?.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }) : undefined
                             );
                           }}
                         />
@@ -272,10 +270,9 @@ export function EmbedForm() {
                           id={`footer-text-${embedIndex}`}
                           value={embed.footer?.text || ""}
                           onChange={(e) => {
-                            const footer = embed.footer || {};
                             updateEmbed(embedIndex, "footer", {
-                              ...footer,
                               text: e.target.value,
+                              icon_url: embed.footer?.icon_url || ""
                             });
                           }}
                           maxLength={2048}
@@ -290,10 +287,9 @@ export function EmbedForm() {
                           id={`footer-icon-${embedIndex}`}
                           value={embed.footer?.icon_url || ""}
                           onChange={(e) => {
-                            const footer = embed.footer || { text: "" };
                             updateEmbed(embedIndex, "footer", {
-                              ...footer,
-                              icon_url: e.target.value,
+                              text: embed.footer?.text || "",
+                              icon_url: e.target.value
                             });
                           }}
                           placeholder="https://example.com/icon.png"
@@ -444,6 +440,11 @@ export function EmbedForm() {
     if (embed.description) count += embed.description.length;
     if (embed.footer?.text) count += embed.footer.text.length;
     if (embed.author?.name) count += embed.author.name.length;
+
+    embed.fields?.forEach((field) => {
+      if (field.name) count += field.name.length;
+      if (field.value) count += field.value.length;
+    });
 
     embed.fields?.forEach((field) => {
       if (field.name) count += field.name.length;
