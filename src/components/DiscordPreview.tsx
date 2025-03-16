@@ -37,6 +37,14 @@ const mockUser: APIUser = {
 
 export function DiscordPreview() {
   const embeds = useStore(embedsStore);
+
+  const getHexColor = (colorInt?: number) => {
+    // Discord embed colors are stored as decimal integers but displayed as hex with #
+    if (colorInt === undefined) return "#0069ff";
+    const hex = colorInt.toString(16).padStart(6, "0").toLowerCase();
+    console.log('Color conversion:', { colorInt, hex });
+    return `#${hex}`;
+  };
   
   const message: APIMessage = {
     id: '1',
@@ -79,7 +87,7 @@ export function DiscordPreview() {
         slot="embeds"
         embedTitle={embed.title}
         url={embed.url}
-        color={embed.color?.toString(16)}
+        color={getHexColor(embed.color)}
         authorImage={embed.author?.icon_url}
         authorName={embed.author?.name}
         authorUrl={embed.author?.url}

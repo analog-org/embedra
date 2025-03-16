@@ -5,7 +5,7 @@ import type { APIEmbed } from 'discord-api-types/v10';
 const initialEmbed: APIEmbed = {
   title: "",
   description: "",
-  color: 0x0099ff,
+  color: 0x0F52BA, // Sapphire blue color from the example
   fields: [],
 };
 

@@ -28,12 +28,13 @@ import type { APIEmbed } from 'discord-api-types/v10'; // Use imported types
 export function EmbedForm() {
   const embeds = useStore(embedsStore);
 
-  const handleColorChange = (index: number, value: any) => {
+  const handleColorValue = (value: { hex: string } | string) => {
     try {
-      const colorInt = parseInt(value.hex.replace("#", ""), 16);
-      updateEmbed(index, "color", colorInt);
+      const hex = typeof value === 'object' ? value.hex : value;
+      return parseInt(hex.replace("#", ""), 16);
     } catch (e) {
-      console.error("Invalid color format");
+      console.error("Invalid color format", e);
+      return 0x0099ff; // Default color on error
     }
   };
 
@@ -127,16 +128,9 @@ export function EmbedForm() {
                         <Label>Color</Label>
                         <ColorPicker
                           value={getHexColor(embed.color)}
-                          onChange={(value) => {
-                            try {
-                              const colorInt = parseInt(
-                                value.replace("#", ""),
-                                16
-                              );
-                              updateEmbed(embedIndex, "color", colorInt);
-                            } catch (e) {
-                              console.error("Invalid color format");
-                            }
+                          onChange={(value: any) => {
+                            const colorInt = handleColorValue(value);
+                            updateEmbed(embedIndex, "color", colorInt);
                           }}
                         />
                       </div>
@@ -459,4 +453,3 @@ export function EmbedForm() {
     return count;
   }
 }
-
