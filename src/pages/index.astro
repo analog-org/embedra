@@ -1,13 +1,18 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
 import { EmbedForm } from '../components/EmbedForm';
+import { DiscordPreview } from '../components/DiscordPreview';
 import "../styles/global.css";
 ---
 
 <Layout>
   <div class="container mx-auto py-8">
     <h1 class="text-3xl font-bold mb-8 text-center">Discord Embed Builder</h1>
-    <EmbedForm client:load />
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <EmbedForm client:load />
+      <div class="bg-[#313338] rounded-lg p-4">
+        <DiscordPreview client:load />
+      </div>
+    </div>
   </div>
 </Layout>
