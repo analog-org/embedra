@@ -1,7 +1,7 @@
 import type { APIMessage, APIUser } from 'discord-api-types/v10';
 import { MessageFlags } from 'discord-api-types/v10';
 import { useStore } from '@nanostores/react';
-import { embedsStore } from '../store/embedStore';
+import { messageStore } from '../store/messageStore';
 import {
   DiscordAttachment,
   DiscordAttachments,
@@ -38,17 +38,17 @@ const mockUser: APIUser = {
 };
 
 export function DiscordPreview() {
-  const embeds = useStore(embedsStore);
+  const message = useStore(messageStore);
 
   const getHexColor = (colorInt?: number) => {
     if (!colorInt) return undefined;
     return `#${colorInt.toString(16).padStart(6, "0")}`;
   };
   
-  const message: APIMessage = {
+  const previewMessage: APIMessage = {
     id: '1',
     type: 0,
-    content: '',
+    content: message.content || '',
     channel_id: '1',
     author: mockUser,
     timestamp: new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }),
@@ -57,8 +57,9 @@ export function DiscordPreview() {
     mention_everyone: false,
     mentions: [],
     mention_roles: [],
-    attachments: [],
-    embeds,
+    attachments: message.attachments || [],
+    embeds: message.embeds || [],
+    components: message.components || [],
     pinned: false,
     flags: MessageFlags.Ephemeral,
   };
@@ -212,30 +213,30 @@ export function DiscordPreview() {
   return (
     <DiscordMessages>
       <DiscordMessage
-        author={message.author.username}
-        avatar={message.author.avatar || undefined}
-        bot={message.author.bot}
-        verified={message.author.verified}
-        timestamp={message.timestamp}
+        author={mockUser.username}
+        avatar={mockUser.avatar || undefined}
+        bot={mockUser.bot}
+        verified={mockUser.verified}
+        timestamp={previewMessage.timestamp}
       >
-        {message.content}
+        {previewMessage.content}
         
         {/* Render embeds */}
-        {message.embeds?.map((embed, index) => (
+        {previewMessage.embeds?.map((embed, index) => (
           <React.Fragment key={`embed-${index}`}>
             {renderEmbed(embed)}
           </React.Fragment>
         ))}
 
         {/* Render attachments */}
-        {message.attachments?.length > 0 && (
+        {previewMessage.attachments?.length > 0 && (
           <DiscordAttachments>
-            {message.attachments.map(attachment => renderAttachment(attachment))}
+            {previewMessage.attachments.map(attachment => renderAttachment(attachment))}
           </DiscordAttachments>
         )}
 
         {/* Render components (buttons, etc.) */}
-        {message.components?.map((row, index) => (
+        {previewMessage.components?.map((row, index) => (
           <div key={`row-${index}`}>
             {renderActionRow(row.components)}
           </div>
