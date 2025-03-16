@@ -10,7 +10,10 @@ import {
   DiscordEmbedField,
   DiscordEmbedFields,
   DiscordMessage,
-  DiscordActionRow
+  DiscordMessages,
+  DiscordActionRow,
+  DiscordEmbedDescription,
+  DiscordEmbedFooter
 } from '@skyra/discord-components-react';
 import type { 
   APIEmbed,
@@ -73,58 +76,54 @@ export function DiscordPreview() {
   const renderEmbed = (embed: APIEmbed) => {
     return (
       <DiscordEmbed
+        slot="embeds"
         embedTitle={embed.title}
         url={embed.url}
         color={embed.color?.toString(16)}
+        authorImage={embed.author?.icon_url}
+        authorName={embed.author?.name}
+        authorUrl={embed.author?.url}
+        image={embed.image?.url}
+        thumbnail={embed.thumbnail?.url}
       >
-        <div>{embed.description}</div>
-        {embed.thumbnail && (
-          <img
-            slot="thumbnail"
-            src={embed.thumbnail.url}
-            alt="Thumbnail"
-          />
+        {embed.description && (
+          <DiscordEmbedDescription slot="description">
+            {(() => {
+              const lines = embed.description.split('\n');
+              return lines.map((line, i) => (
+                <span key={i}>
+                  {line}
+                  {i < lines.length - 1 && <br />}
+                </span>
+              ));
+            })()}
+          </DiscordEmbedDescription>
         )}
-        {embed.image && (
-          <img
-            slot="image"
-            src={embed.image.url}
-            alt="Embed image"
-          />
+
+        {embed.fields && embed.fields.length > 0 && (
+          <DiscordEmbedFields slot="fields">
+            {embed.fields.map((field, index) => (
+              <DiscordEmbedField
+                key={index}
+                fieldTitle={field.name}
+                inline={field.inline}
+              >
+                {field.value?.split('\n').map((line, i) => 
+                  line ? <span key={i}>{line}</span> : <br key={i} />
+                )}
+              </DiscordEmbedField>
+            ))}
+          </DiscordEmbedFields>
         )}
-        {embed.author && (
-          <div slot="author">
-            {embed.author.icon_url && (
-              <img
-                src={embed.author.icon_url}
-                alt="Author"
-                style={{ height: 24, width: 24, borderRadius: '50%', marginRight: 8 }}
-              />
-            )}
-            {embed.author.url ? (
-              <a href={embed.author.url}>{embed.author.name}</a>
-            ) : (
-              embed.author.name
-            )}
-          </div>
-        )}
-        {renderEmbedFields(embed.fields)}
-        {embed.footer && (
-          <div slot="footer">
-            {embed.footer.icon_url && (
-              <img
-                src={embed.footer.icon_url}
-                alt="Footer"
-                style={{ height: 20, width: 20, borderRadius: '50%', marginRight: 8 }}
-              />
-            )}
-            {embed.footer.text}
-            {embed.timestamp && (
-              <span style={{ marginLeft: 8 }}>
-                {new Date(embed.timestamp).toLocaleDateString()}
-              </span>
-            )}
-          </div>
+
+        {(embed.footer || embed.timestamp) && (
+          <DiscordEmbedFooter
+            slot="footer"
+            footerImage={embed.footer?.icon_url}
+            timestamp={embed.timestamp ? new Date(embed.timestamp) : undefined}
+          >
+            {embed.footer?.text}
+          </DiscordEmbedFooter>
         )}
       </DiscordEmbed>
     );
@@ -230,33 +229,35 @@ export function DiscordPreview() {
   };
 
   return (
-    <DiscordMessage
-      author={message.author.username}
-      avatar={message.author.avatar || undefined}
-      bot={message.author.bot}
-      verified={message.author.verified}
-      timestamp={message.timestamp}
-    >
-      {message.content}
-      
-      {/* Render embeds */}
-      {message.embeds?.map((embed, index) => (
-        <div key={`embed-${index}`}>{renderEmbed(embed)}</div>
-      ))}
+    <DiscordMessages>
+      <DiscordMessage
+        author={message.author.username}
+        avatar={message.author.avatar || undefined}
+        bot={message.author.bot}
+        verified={message.author.verified}
+        timestamp={message.timestamp}
+      >
+        {message.content}
+        
+        {/* Render embeds */}
+        {message.embeds?.map((embed, index) => (
+          <div key={`embed-${index}`}>{renderEmbed(embed)}</div>
+        ))}
 
-      {/* Render attachments */}
-      {message.attachments?.length > 0 && (
-        <DiscordAttachments>
-          {message.attachments.map(attachment => renderAttachment(attachment))}
-        </DiscordAttachments>
-      )}
+        {/* Render attachments */}
+        {message.attachments?.length > 0 && (
+          <DiscordAttachments>
+            {message.attachments.map(attachment => renderAttachment(attachment))}
+          </DiscordAttachments>
+        )}
 
-      {/* Render components (buttons, etc.) */}
-      {message.components?.map((row, index) => (
-        <div key={`row-${index}`}>
-          {renderActionRow(row.components)}
-        </div>
-      ))}
-    </DiscordMessage>
+        {/* Render components (buttons, etc.) */}
+        {message.components?.map((row, index) => (
+          <div key={`row-${index}`}>
+            {renderActionRow(row.components)}
+          </div>
+        ))}
+      </DiscordMessage>
+    </DiscordMessages>
   );
 }
