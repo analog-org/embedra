@@ -176,7 +176,11 @@ export function DiscordPreview() {
         verified={mockUser.verified}
         timestamp={previewMessage.timestamp}
       >
-        {previewMessage.content.replace(/\n/g, ' &nbsp; ') || " "}
+        <div>
+          {previewMessage.content.split("\n").map((line, i) =>
+            line ? <p key={i}>{line}</p> : <br key={i} />
+          )}
+        </div>
 
         {/* Render embeds directly without Fragment wrapper */}
 
@@ -196,7 +200,10 @@ export function DiscordPreview() {
             >
               {embed.description && (
                 <DiscordEmbedDescription slot="description">
-                  {embed.description}
+                  {embed.description.split("\n")
+                        .map((line, i) =>
+                          line ? <p key={i}>{line}</p> : <br key={i} />
+                        )}
                 </DiscordEmbedDescription>
               )}
 
