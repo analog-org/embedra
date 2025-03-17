@@ -12,7 +12,7 @@ import { ButtonStyle, ComponentType } from 'discord-api-types/v10';
 
 // Initial message state
 export const initialMessage: Partial<APIMessage> = {
-  content: "",
+  content: "Example content",
   embeds: [{
     title: "Test",
     description: "This is an example embed",
