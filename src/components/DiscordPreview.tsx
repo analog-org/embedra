@@ -1,7 +1,7 @@
-import type { APIMessage, APIUser } from 'discord-api-types/v10';
-import { MessageFlags } from 'discord-api-types/v10';
-import { useStore } from '@nanostores/react';
-import { messageStore } from '../store/messageStore';
+import type { APIMessage, APIUser } from "discord-api-types/v10";
+import { MessageFlags } from "discord-api-types/v10";
+import { useStore } from "@nanostores/react";
+import { messageStore } from "../store/messageStore";
 import {
   DiscordAttachment,
   DiscordAttachments,
@@ -13,111 +13,68 @@ import {
   DiscordMessages,
   DiscordActionRow,
   DiscordEmbedDescription,
-  DiscordEmbedFooter
-} from '@skyra/discord-components-react';
-import type { 
+  DiscordEmbedFooter,
+} from "@skyra/discord-components-react";
+import type {
   APIEmbed,
   APIEmbedField,
   APIAttachment,
   APIMessageActionRowComponent,
-  APIButtonComponent
-} from 'discord-api-types/v10';
-import React from 'react';
-import { ButtonStyle } from 'discord-api-types/v10';
-import { DayPicker } from "react-day-picker"
+  APIButtonComponent,
+} from "discord-api-types/v10";
+import React from "react";
+import { ButtonStyle } from "discord-api-types/v10";
+import { DayPicker } from "react-day-picker";
 
 const mockUser: APIUser = {
-  id: '1234567890',
-  username: 'Preview Bot',
-  discriminator: '0000',
-  global_name: 'Preview Bot',
+  id: "1234567890",
+  username: "Preview Bot",
+  discriminator: "0000",
+  global_name: "Preview Bot",
   avatar: null,
   bot: true,
   system: false,
-  verified: true
+  verified: true,
 };
 
 export function DiscordPreview() {
-  const message = useStore(messageStore);
+  const $message = useStore(messageStore);
 
   const getHexColor = (colorInt?: number) => {
     if (!colorInt) return undefined;
     return `#${colorInt.toString(16).padStart(6, "0")}`;
   };
-  
+
   const previewMessage: APIMessage = {
-    id: '1',
+    id: "1",
     type: 0,
-    content: message.content || '',
-    channel_id: '1',
+    content: $message.content || "",
+    channel_id: "1",
     author: mockUser,
-    timestamp: new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }),
+    timestamp: new Date().toLocaleDateString("en-US", {
+      month: "2-digit",
+      day: "2-digit",
+      year: "numeric",
+    }),
     edited_timestamp: null,
     tts: false,
     mention_everyone: false,
     mentions: [],
     mention_roles: [],
-    attachments: message.attachments || [],
-    embeds: message.embeds || [],
-    components: message.components || [],
+    attachments: $message.attachments || [],
+    embeds: $message.embeds || [],
+    components: $message.components || [],
     pinned: false,
     flags: MessageFlags.Ephemeral,
   };
 
-  const renderEmbed = (embed: APIEmbed) => {
-    return (
-      <DiscordEmbed
-        slot="embeds"
-        embedTitle={embed.title}
-        url={embed.url}
-        color={getHexColor(embed.color)}
-        authorImage={embed.author?.icon_url}
-        authorName={embed.author?.name}
-        authorUrl={embed.author?.url}
-        image={embed.image?.url}
-        thumbnail={embed.thumbnail?.url}
-      >
-        {embed.description && (
-          <DiscordEmbedDescription slot="description">
-            {embed.description}
-          </DiscordEmbedDescription>
-        )}
-        
-        {embed.fields && embed.fields.length > 0 && (
-          <DiscordEmbedFields slot="fields">
-            {embed.fields.map((field, index) => (
-              <DiscordEmbedField
-                key={index}
-                fieldTitle={field.name}
-                inline={field.inline}
-              >
-                {field.value.split('\n').map((line, i) => 
-                  line ? <p key={i}>{line}</p> : <br key={i} />
-                )}
-              </DiscordEmbedField>
-            ))}
-          </DiscordEmbedFields>
-        )}
-        
-          <DiscordEmbedFooter
-            slot="footer"
-            footerImage={embed.footer?.icon_url}
-            timestamp={embed.timestamp}
-          >
-            {embed.footer?.text}
-          </DiscordEmbedFooter>
-    
-      </DiscordEmbed>
-    );
-  };
-
-  const renderAttachment = (attachment: APIAttachment) => {
-    const isImage = attachment.content_type?.startsWith('image/');
-    const isVideo = attachment.content_type?.startsWith('video/');
+  const renderAttachment = (attachment: APIAttachment, index: number) => {
+    const isImage = attachment.content_type?.startsWith("image/");
+    const isVideo = attachment.content_type?.startsWith("video/");
 
     return (
       <DiscordAttachment
-        key={attachment.id}
+        key={`attachment-${attachment.id || index}`}
         url={attachment.url}
         height={attachment.height ?? undefined}
         width={attachment.width ?? undefined}
@@ -128,8 +85,8 @@ export function DiscordPreview() {
             src={attachment.url}
             alt={attachment.description || attachment.filename}
             style={{
-              maxWidth: '100%',
-              height: 'auto'
+              maxWidth: "300px",
+              height: "auto",
             }}
           />
         ) : isVideo ? (
@@ -137,8 +94,8 @@ export function DiscordPreview() {
             src={attachment.url}
             controls
             style={{
-              maxWidth: '100%',
-              height: 'auto'
+              maxWidth: "300px",
+              height: "auto",
             }}
           />
         ) : (
@@ -148,54 +105,54 @@ export function DiscordPreview() {
     );
   };
 
-  const renderActionRow = (components: APIMessageActionRowComponent[]) => {
+  const renderButton = (
+    component: APIMessageActionRowComponent,
+    index: number
+  ) => {
+    if (component.type !== 2 || !("style" in component)) return null;
+
+    // Button with URL
+    if ("url" in component) {
+      return (
+        <DiscordButton
+          key={`button-url-${index}`}
+          type={mapButtonStyle(component.style)}
+          disabled={component.disabled}
+          url={component.url}
+        >
+          {component.label || "Link"}
+        </DiscordButton>
+      );
+    }
+
+    // Button with custom_id
+    if ("custom_id" in component) {
+      return (
+        <DiscordButton
+          key={`button-custom-${index}`}
+          type={mapButtonStyle(component.style)}
+          disabled={component.disabled}
+        >
+          {component.label || component.custom_id}
+        </DiscordButton>
+      );
+    }
+
+    // Fallback
     return (
-      <DiscordActionRow>
-        {components.map((component, index) => {
-          if (component.type === 2 && 'style' in component) {
-            // Type guard for button with URL
-            if ('url' in component) {
-              return (
-                <DiscordButton
-                  key={index}
-                  type={mapButtonStyle(component.style)}
-                  disabled={component.disabled}
-                  url={component.url}
-                >
-                  {component.label || 'Link'}
-                </DiscordButton>
-              );
-            }
-            // Type guard for button with custom_id
-            if ('custom_id' in component) {
-              return (
-                <DiscordButton
-                  key={index}
-                  type={mapButtonStyle(component.style)}
-                  disabled={component.disabled}
-                >
-                  {component.label || component.custom_id}
-                </DiscordButton>
-              );
-            }
-            // Fallback for other button types
-            return (
-              <DiscordButton
-                key={index}
-                type={mapButtonStyle(component.style)}
-                disabled={component.disabled}
-              >
-                Button
-              </DiscordButton>
-            );
-          }
-          return null; // Handle other component types as needed
-        })}
-      </DiscordActionRow>
+      <DiscordButton
+        key={`button-${index}`}
+        type={mapButtonStyle(component.style)}
+        disabled={component.disabled}
+      >
+        Button
+      </DiscordButton>
     );
   };
 
-  const mapButtonStyle = (style: ButtonStyle): "primary" | "secondary" | "success" | "destructive" => {
+  const mapButtonStyle = (
+    style: ButtonStyle
+  ): "primary" | "secondary" | "success" | "destructive" => {
     switch (style) {
       case ButtonStyle.Primary:
         return "primary";
@@ -219,28 +176,118 @@ export function DiscordPreview() {
         verified={mockUser.verified}
         timestamp={previewMessage.timestamp}
       >
-        {previewMessage.content}
-        
-        {/* Render embeds */}
-        {previewMessage.embeds?.map((embed, index) => (
-          <React.Fragment key={`embed-${index}`}>
-            {renderEmbed(embed)}
-          </React.Fragment>
-        ))}
+        {previewMessage.content.replace(/\n/g, ' &nbsp; ') || " "}
+
+        {/* Render embeds directly without Fragment wrapper */}
+
+        <div>
+          {previewMessage.embeds?.map((embed, index) => (
+            <DiscordEmbed
+              key={`embed-${index}`}
+              slot="embeds"
+              embedTitle={embed.title}
+              url={embed.url}
+              color={getHexColor(embed.color)}
+              authorImage={embed.author?.icon_url}
+              authorName={embed.author?.name}
+              authorUrl={embed.author?.url}
+              image={embed.image?.url}
+              thumbnail={embed.thumbnail?.url}
+            >
+              {embed.description && (
+                <DiscordEmbedDescription slot="description">
+                  {embed.description}
+                </DiscordEmbedDescription>
+              )}
+
+              {embed.fields && embed.fields.length > 0 && (
+                <DiscordEmbedFields slot="fields">
+                  {embed.fields.map((field, fieldIndex) => (
+                    <DiscordEmbedField
+                      key={fieldIndex}
+                      fieldTitle={field.name}
+                      inline={field.inline}
+                      inlineIndex={field.inline ? fieldIndex + 1 : undefined}
+                    >
+                      {field.value
+                        .split("\n")
+                        .map((line, i) =>
+                          line ? <p key={i}>{line}</p> : <br key={i} />
+                        )}
+                    </DiscordEmbedField>
+                  ))}
+                </DiscordEmbedFields>
+              )}
+
+              <DiscordEmbedFooter
+                slot="footer"
+                footerImage={embed.footer?.icon_url}
+                timestamp={embed.timestamp || undefined}
+              >
+                {embed.footer?.text || " "}
+              </DiscordEmbedFooter>
+            </DiscordEmbed>
+          ))}
+        </div>
 
         {/* Render attachments */}
-        {previewMessage.attachments?.length > 0 && (
-          <DiscordAttachments>
-            {previewMessage.attachments.map(attachment => renderAttachment(attachment))}
-          </DiscordAttachments>
-        )}
 
-        {/* Render components (buttons, etc.) */}
-        {previewMessage.components?.map((row, index) => (
-          <div key={`row-${index}`}>
-            {renderActionRow(row.components)}
-          </div>
-        ))}
+        <div>
+          <DiscordAttachments slot="attachments">
+            {previewMessage.attachments.map((attachment, index) =>
+              renderAttachment(attachment, index)
+            )}
+          </DiscordAttachments>
+        </div>
+
+        <div>
+          {previewMessage.components?.map((row, rowIndex) => (
+            <DiscordActionRow key={`row-${rowIndex}`} slot="components">
+              {row.components.map((component, compIndex) => {
+                if (component.type !== 2 || !("style" in component))
+                  return null;
+
+                // Button with URL
+                if ("url" in component) {
+                  return (
+                    <DiscordButton
+                      key={`button-url-${compIndex}`}
+                      type={mapButtonStyle(component.style)}
+                      disabled={component.disabled}
+                      url={component.url}
+                    >
+                      {component.label || "Link"}
+                    </DiscordButton>
+                  );
+                }
+
+                // Button with custom_id
+                if ("custom_id" in component) {
+                  return (
+                    <DiscordButton
+                      key={`button-custom-${compIndex}`}
+                      type={mapButtonStyle(component.style)}
+                      disabled={component.disabled}
+                    >
+                      {component.label || component.custom_id}
+                    </DiscordButton>
+                  );
+                }
+
+                // Fallback
+                return (
+                  <DiscordButton
+                    key={`button-${compIndex}`}
+                    type={mapButtonStyle(component.style)}
+                    disabled={component.disabled}
+                  >
+                    Button
+                  </DiscordButton>
+                );
+              })}
+            </DiscordActionRow>
+          ))}
+        </div>
       </DiscordMessage>
     </DiscordMessages>
   );
