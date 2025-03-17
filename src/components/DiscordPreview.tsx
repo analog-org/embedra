@@ -177,9 +177,9 @@ export function DiscordPreview() {
         timestamp={previewMessage.timestamp}
       >
         <div>
-          {previewMessage.content.split("\n").map((line, i) =>
-            line ? <p key={i}>{line}</p> : <br key={i} />
-          )}
+          {previewMessage.content
+            .split("\n")
+            .map((line, i) => (line ? <p key={i}>{line}</p> : <br key={i} />))}
         </div>
 
         {/* Render embeds directly without Fragment wrapper */}
@@ -200,10 +200,11 @@ export function DiscordPreview() {
             >
               {embed.description && (
                 <DiscordEmbedDescription slot="description">
-                  {embed.description.split("\n")
-                        .map((line, i) =>
-                          line ? <p key={i}>{line}</p> : <br key={i} />
-                        )}
+                  {embed.description
+                    .split("\n")
+                    .map((line, i) =>
+                      line ? <p key={i}>{line}</p> : <br key={i} />
+                    )}
                 </DiscordEmbedDescription>
               )}
 
@@ -231,7 +232,7 @@ export function DiscordPreview() {
                 footerImage={embed.footer?.icon_url}
                 timestamp={embed.timestamp || undefined}
               >
-                {embed.footer?.text || " "}
+                <div>{embed.footer?.text || " "}</div>
               </DiscordEmbedFooter>
             </DiscordEmbed>
           ))}
