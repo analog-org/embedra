@@ -14,6 +14,8 @@ import {
   DiscordActionRow,
   DiscordEmbedDescription,
   DiscordEmbedFooter,
+  DiscordCustomEmoji,
+  DiscordMention,
 } from "@skyra/discord-components-react";
 import type {
   APIEmbed,
@@ -22,6 +24,7 @@ import type {
   APIMessageActionRowComponent,
   APIButtonComponent,
 } from "discord-api-types/v10";
+import { parseCustomEmojis } from "@/lib/parseUtils";
 import React from "react";
 import { ButtonStyle } from "discord-api-types/v10";
 import { DayPicker } from "react-day-picker";
@@ -36,6 +39,8 @@ const mockUser: APIUser = {
   system: false,
   verified: true,
 };
+
+
 
 export function DiscordPreview() {
   const $message = useStore(messageStore);
@@ -179,7 +184,7 @@ export function DiscordPreview() {
         <div>
           {previewMessage.content
             .split("\n")
-            .map((line, i) => (line ? <p key={i}>{line}</p> : <br key={i} />))}
+            .map((line, i) => (line ? <p key={i}>{parseCustomEmojis(line)}</p> : <br key={i} />))}
         </div>
 
         {/* Render embeds directly without Fragment wrapper */}
