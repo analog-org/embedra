@@ -24,7 +24,7 @@ import type {
   APIMessageActionRowComponent,
   APIButtonComponent,
 } from "discord-api-types/v10";
-import { parseCustomEmojis } from "@/lib/parseUtils";
+import { parseText } from "@/lib/parseUtils";
 import React from "react";
 import { ButtonStyle } from "discord-api-types/v10";
 import { DayPicker } from "react-day-picker";
@@ -184,7 +184,7 @@ export function DiscordPreview() {
         <div>
           {previewMessage.content
             .split("\n")
-            .map((line, i) => (line ? <p key={i}>{parseCustomEmojis(line)}</p> : <br key={i} />))}
+            .map((line, i) => (line ? <p key={i}>{parseText(line)}</p> : <br key={i} />))}
         </div>
 
         {/* Render embeds directly without Fragment wrapper */}

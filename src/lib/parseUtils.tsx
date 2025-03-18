@@ -3,7 +3,7 @@ import { DiscordCustomEmoji, DiscordTime, DiscordMention } from '@skyra/discord-
 
 
 
-export const parseCustomEmojis = (text: string) => {
+export const parseText = (text: string) => {
   if (!text) return text;
   
   // Regex pattern to match Discord custom emoji format <:name:id>
