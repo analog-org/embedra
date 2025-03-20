@@ -3,7 +3,6 @@ import { MessageFlags } from "discord-api-types/v10";
 import { useStore } from "@nanostores/react";
 import { messageStore } from "../store/messageStore";
 import {
-  DiscordAttachment,
   DiscordAttachments,
   DiscordButton,
   DiscordEmbed,
@@ -78,12 +77,10 @@ export function DiscordPreview() {
     const isVideo = attachment.content_type?.startsWith("video/");
 
     return (
-      <DiscordAttachment
+      <DiscordAttachments
         key={`attachment-${attachment.id || index}`}
-        url={attachment.url}
-        height={attachment.height ?? undefined}
-        width={attachment.width ?? undefined}
-        alt={attachment.description || attachment.filename}
+        slot="attachments"
+        
       >
         {isImage ? (
           <img
@@ -106,7 +103,7 @@ export function DiscordPreview() {
         ) : (
           attachment.filename
         )}
-      </DiscordAttachment>
+      </DiscordAttachments>
     );
   };
 
