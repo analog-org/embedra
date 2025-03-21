@@ -27,6 +27,7 @@ import { parseText } from "@/lib/parseUtils";
 import React from "react";
 import { ButtonStyle } from "discord-api-types/v10";
 import { DayPicker } from "react-day-picker";
+import DiscordMarkdown from "./DiscordMarkdown";
 
 const mockUser: APIUser = {
   id: "1234567890",
@@ -179,9 +180,12 @@ export function DiscordPreview() {
         timestamp={previewMessage.timestamp}
       >
         <div>
-          {previewMessage.content
+          {/* {previewMessage.content
             .split("\n")
-            .map((line, i) => (line ? <p key={i}>{parseText(line)}</p> : <br key={i} />))}
+            .map((line, i) => (line ? <DiscordMarkdown key={i}>{line}</DiscordMarkdown> : <br key={i} />))} */}
+            <DiscordMarkdown>
+              {previewMessage.content}
+            </DiscordMarkdown>
         </div>
 
         {/* Render embeds directly without Fragment wrapper */}
