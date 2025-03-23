@@ -42,6 +42,7 @@
     "embedra": "file:",
     "emoji-picker-react": "^4.12.2",
     "framer-motion": "^12.5.0",
+    "highlight.js": "^11.11.1",
     "lucide-react": "^0.483.0",
     "nanostores": "^0.11.4",
     "react": "^19.0.0",

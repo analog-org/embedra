@@ -157,7 +157,7 @@ const parserRules: ParserRule[] = [
  * @param text Input text with Discord markdown/formatting
  * @returns An array of text fragments and React components
  */
-export const parseText = (text: string): React.ReactNode => {
+export const parseText = (text: string | React.ReactNode): React.ReactNode => {
   if (!text) return text;
 
   let parts: React.ReactNode[] = [text];
