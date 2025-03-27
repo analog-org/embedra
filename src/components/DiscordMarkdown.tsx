@@ -18,7 +18,7 @@ import {
 } from "@skyra/discord-components-react";
 import { parseText } from "@/lib/parseUtils";
 import { cn } from "@/lib/utils";
-import remarkGfm from 'remark-gfm'
+import remarkGfm from "remark-gfm";
 
 export interface DiscordMarkdownProps {
   className?: string;
@@ -31,7 +31,9 @@ const DiscordMarkdown = React.forwardRef<HTMLDivElement, DiscordMarkdownProps>(
     const renderMarkdown = (content: string): React.ReactNode => {
       return (
         <Markdown
-          remarkPlugins={[remarkGfm]}
+          skipHtml
+          remarkPlugins={[[remarkGfm, { singleTilde: false }]]}
+          remarkRehypeOptions={{ }}
           components={{
             pre({ children }) {
               return (

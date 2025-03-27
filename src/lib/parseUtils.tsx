@@ -4,13 +4,13 @@ import {
   DiscordTime,
   DiscordMention,
   DiscordBold,
-  DiscordItalic, 
+  DiscordItalic,
   DiscordUnderlined,
   DiscordSubscript,
   DiscordCode,
   DiscordSpoiler,
   DiscordQuote,
-  DiscordLink
+  DiscordLink,
 } from "@skyra/discord-components-react";
 
 // Define a type for component generator functions
@@ -146,9 +146,19 @@ const parserRules: ParserRule[] = [
         </DiscordTime>
       );
     },
+    // add one for subscript
+    // subscript rule
   },
   // Bold text rule
-  
+  {
+    regex: /-#\s*([^]+?)(?=\n|-#|$)/g,
+    generator: (match) => (
+      <DiscordSubscript key={`bold-${match.index}`}>
+        {match[1]}
+      </DiscordSubscript>
+    ),
+  },
+
   // Add more rules here as needed
 ];
 
