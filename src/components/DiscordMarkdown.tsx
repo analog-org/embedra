@@ -19,12 +19,31 @@ import {
 import { parseText } from "@/lib/parseUtils";
 import { cn } from "@/lib/utils";
 import remarkGfm from "remark-gfm";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import hljs from "highlight.js";
+import "./discord-hljs.css";
+
 export interface DiscordMarkdownProps {
   className?: string;
   children: string;
 }
+
+const CodeBlock: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => {
+  const codeRef = React.useRef<HTMLElement>(null);
+
+  React.useEffect(() => {
+    if (codeRef.current) {
+      hljs.highlightElement(codeRef.current);
+    }
+  }, [children]);
+
+  return (
+    <pre className="theme-dark bg-black rounded-md overflow-hidden">
+      <code ref={codeRef} className={className}>
+        {children}
+      </code>
+    </pre>
+  );
+};
 
 const DiscordMarkdown = React.forwardRef<HTMLDivElement, DiscordMarkdownProps>(
   ({ className, children, ...props }, ref) => {
@@ -45,23 +64,8 @@ const DiscordMarkdown = React.forwardRef<HTMLDivElement, DiscordMarkdownProps>(
                 </>
               );
             },
-            code(props) {
-              const { children, className, node, ref, ...rest } = props;
-              const match = /language-(\w+)/.exec(className || "");
-                return match ? (
-                <SyntaxHighlighter
-                  {...rest}
-                  PreTag="div"
-                  children={String(children).replace(/\n$/, "")}
-                  language={match[1]}
-                  style={oneDark}
-                  customStyle={} // Discord dark theme code block color
-                />
-                ) : (
-                <DiscordCode className="bg-[#2f3136]">
-                  {children}
-                </DiscordCode>
-                );
+            code({ children, className, ...rest }) {
+              return <CodeBlock className={className}>{children}</CodeBlock>;
             },
             // Use simpler components to avoid nesting issues
             p: ({ children }) => (
