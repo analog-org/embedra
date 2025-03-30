@@ -31,7 +31,7 @@ const CodeBlock: React.FC<{ children: React.ReactNode; className?: string }> = (
   const codeRef = React.useRef<HTMLElement>(null);
 
   React.useEffect(() => {
-    console.log(codeRef.current)
+
     if (codeRef.current) {
       hljs.highlightElement(codeRef.current);
     }
@@ -70,6 +70,15 @@ const DiscordMarkdown = React.forwardRef<HTMLDivElement, DiscordMarkdownProps>(
               );
             },
             code({ children, className, ...rest }) {
+              // If there's no className or it's explicitly "language-" (i.e. triple backticks without a language)
+              if (!className) {
+                console.log(content)
+                if(content.includes("```") && content.includes(children as string)) {
+                  return <CodeBlock className={className}>{children}</CodeBlock>;
+                }
+                return <DiscordCode>{children}</DiscordCode>;
+              }
+              // Otherwise, it's a multi-line code block with a specified language (```js, etc.)
               return <CodeBlock className={className}>{children}</CodeBlock>;
             },
             // Use simpler components to avoid nesting issues
