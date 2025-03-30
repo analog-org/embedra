@@ -31,14 +31,19 @@ const CodeBlock: React.FC<{ children: React.ReactNode; className?: string }> = (
   const codeRef = React.useRef<HTMLElement>(null);
 
   React.useEffect(() => {
+    console.log(codeRef.current)
     if (codeRef.current) {
       hljs.highlightElement(codeRef.current);
     }
   }, [children]);
 
   return (
-    <pre className="theme-dark bg-black rounded-md overflow-hidden">
-      <code ref={codeRef} className={className}>
+    <pre className="theme-dark ">
+      <code 
+        ref={codeRef} 
+        className={cn("", className)} 
+        style={{ backgroundColor: "#2f3136", display: "block", padding: "0.5rem", marginRight: "0.5rem", marginBottom: "0.5rem", }}
+      >
         {children}
       </code>
     </pre>
