@@ -77,74 +77,92 @@ const parserRules: ParserRule[] = [
     generator: (match) => {
       const timestamp = parseInt(match[1], 10);
       const format = match[2] || "f";
-      const date = new Date(timestamp * 1000); // Discord timestamps are in seconds, JS uses milliseconds
-
-      let formattedTime = "";
-      switch (format) {
-        case "t": // Short Time (e.g. 2:30 PM)
-          formattedTime = date.toLocaleTimeString(undefined, {
-            hour: "numeric",
-            minute: "numeric",
-          });
-          break;
-        case "T": // Long Time (e.g. 2:30:20 PM)
-          formattedTime = date.toLocaleTimeString();
-          break;
-        case "d": // Short Date (e.g. 01/01/2022)
-          formattedTime = date.toLocaleDateString();
-          break;
-        case "D": // Long Date (e.g. January 1, 2022)
-          formattedTime = date.toLocaleDateString(undefined, {
-            dateStyle: "long",
-          });
-          break;
-        case "f": // Short Date/Time (e.g. January 1, 2022 2:30 PM)
-          formattedTime =
-            date.toLocaleDateString(undefined, { dateStyle: "long" }) +
-            " " +
-            date.toLocaleTimeString(undefined, {
+      
+      // Create a component that updates itself
+      const TimestampComponent = () => {
+        const [currentTime, setCurrentTime] = React.useState(new Date());
+        
+        React.useEffect(() => {
+          // Update the component every second
+          const interval = setInterval(() => {
+            setCurrentTime(new Date());
+          }, 1000);
+          
+          // Clean up interval on unmount
+          return () => clearInterval(interval);
+        }, []);
+        
+        const date = new Date(timestamp * 1000); // Discord timestamps are in seconds
+        
+        let formattedTime = "";
+        switch (format) {
+          case "t": // Short Time (e.g. 2:30 PM)
+            formattedTime = date.toLocaleTimeString(undefined, {
               hour: "numeric",
               minute: "numeric",
             });
-          break;
-        case "F": // Long Date/Time (e.g. Monday, January 1, 2022 2:30 PM)
-          formattedTime =
-            date.toLocaleDateString(undefined, {
-              weekday: "long",
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            }) +
-            " " +
-            date.toLocaleTimeString(undefined, {
-              hour: "numeric",
-              minute: "numeric",
+            break;
+          case "T": // Long Time (e.g. 2:30:20 PM)
+            formattedTime = date.toLocaleTimeString();
+            break;
+          case "d": // Short Date (e.g. 01/01/2022)
+            formattedTime = date.toLocaleDateString();
+            break;
+          case "D": // Long Date (e.g. January 1, 2022)
+            formattedTime = date.toLocaleDateString(undefined, {
+              dateStyle: "long",
             });
-          break;
-        case "R": // Relative Time (e.g. 2 hours ago)
-          const now = new Date();
-          const diff = Math.floor((now.getTime() - date.getTime()) / 1000); // diff in seconds
+            break;
+          case "f": // Short Date/Time (e.g. January 1, 2022 2:30 PM)
+            formattedTime =
+              date.toLocaleDateString(undefined, { dateStyle: "long" }) +
+              " " +
+              date.toLocaleTimeString(undefined, {
+                hour: "numeric",
+                minute: "numeric",
+              });
+            break;
+          case "F": // Long Date/Time (e.g. Monday, January 1, 2022 2:30 PM)
+            formattedTime =
+              date.toLocaleDateString(undefined, {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              }) +
+              " " +
+              date.toLocaleTimeString(undefined, {
+                hour: "numeric",
+                minute: "numeric",
+              });
+            break;
+          case "R": // Relative Time (e.g. 2 hours ago)
+            const now = currentTime;
+            const diff = Math.floor((now.getTime() - date.getTime()) / 1000); // diff in seconds
 
-          if (diff < 60) formattedTime = `${diff} seconds ago`;
-          else if (diff < 3600)
-            formattedTime = `${Math.floor(diff / 60)} minutes ago`;
-          else if (diff < 86400)
-            formattedTime = `${Math.floor(diff / 3600)} hours ago`;
-          else if (diff < 2592000)
-            formattedTime = `${Math.floor(diff / 86400)} days ago`;
-          else if (diff < 31536000)
-            formattedTime = `${Math.floor(diff / 2592000)} months ago`;
-          else formattedTime = `${Math.floor(diff / 31536000)} years ago`;
-          break;
-        default:
-          formattedTime = date.toLocaleString();
-      }
-
-      return (
-        <DiscordTime key={`time-${timestamp}-${match.index}`}>
-          {formattedTime}
-        </DiscordTime>
-      );
+            if (diff < 60) formattedTime = `${diff} seconds ago`;
+            else if (diff < 3600)
+              formattedTime = `${Math.floor(diff / 60)} minutes ago`;
+            else if (diff < 86400)
+              formattedTime = `${Math.floor(diff / 3600)} hours ago`;
+            else if (diff < 2592000)
+              formattedTime = `${Math.floor(diff / 86400)} days ago`;
+            else if (diff < 31536000)
+              formattedTime = `${Math.floor(diff / 2592000)} months ago`;
+            else formattedTime = `${Math.floor(diff / 31536000)} years ago`;
+            break;
+          default:
+            formattedTime = date.toLocaleString();
+        }
+        
+        return (
+          <DiscordTime>
+            {formattedTime}
+          </DiscordTime>
+        );
+      };
+      
+      return <TimestampComponent key={`time-${timestamp}-${match.index}`} />;
     },
     // add one for subscript
     // subscript rule
