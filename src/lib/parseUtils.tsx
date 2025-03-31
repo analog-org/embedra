@@ -164,8 +164,6 @@ const parserRules: ParserRule[] = [
       
       return <TimestampComponent key={`time-${timestamp}-${match.index}`} />;
     },
-    // add one for subscript
-    // subscript rule
   },
   // Bold text rule
   {
@@ -174,6 +172,15 @@ const parserRules: ParserRule[] = [
       <DiscordSubscript key={`bold-${match.index}`}>
         {match[1]}
       </DiscordSubscript>
+    ),
+  },
+  // spoiler rule
+  {
+    regex: /\|\|([^|]+?)\|\|/g,
+    generator: (match) => (
+      <DiscordSpoiler key={`spoiler-${match.index}`}>
+        {match[1]}
+      </DiscordSpoiler>
     ),
   },
 

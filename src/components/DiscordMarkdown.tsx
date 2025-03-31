@@ -72,7 +72,6 @@ const DiscordMarkdown = React.forwardRef<HTMLDivElement, DiscordMarkdownProps>(
             code({ children, className, ...rest }) {
               // If there's no className or it's explicitly "language-" (i.e. triple backticks without a language)
               if (!className) {
-                console.log(content)
                 if(content.includes("```") && content.includes(children as string)) {
                   return <CodeBlock className={className}>{children}</CodeBlock>;
                 }
@@ -178,6 +177,7 @@ const DiscordMarkdown = React.forwardRef<HTMLDivElement, DiscordMarkdownProps>(
                 {typeof children === "string" ? parseText(children) : children}
               </del>
             ),
+    
             // add any additional rules as needed
           }}
         >
