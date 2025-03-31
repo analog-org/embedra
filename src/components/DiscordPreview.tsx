@@ -40,8 +40,6 @@ const mockUser: APIUser = {
   verified: true,
 };
 
-
-
 export function DiscordPreview() {
   const $message = useStore(messageStore);
 
@@ -81,7 +79,6 @@ export function DiscordPreview() {
       <DiscordAttachments
         key={`attachment-${attachment.id || index}`}
         slot="attachments"
-        
       >
         {isImage ? (
           <img
@@ -183,9 +180,7 @@ export function DiscordPreview() {
           {/* {previewMessage.content
             .split("\n")
             .map((line, i) => (line ? <DiscordMarkdown key={i}>{line}</DiscordMarkdown> : <br key={i} />))} */}
-            <DiscordMarkdown>
-              {previewMessage.content}
-            </DiscordMarkdown>
+          <DiscordMarkdown>{previewMessage.content}</DiscordMarkdown>
         </div>
 
         {/* Render embeds directly without Fragment wrapper */}
@@ -206,11 +201,7 @@ export function DiscordPreview() {
             >
               {embed.description && (
                 <DiscordEmbedDescription slot="description">
-                  {embed.description
-                    .split("\n")
-                    .map((line, i) =>
-                      line ? <p key={i}>{line}</p> : <br key={i} />
-                    )}
+                  <DiscordMarkdown>{embed.description}</DiscordMarkdown>
                 </DiscordEmbedDescription>
               )}
 
@@ -223,11 +214,7 @@ export function DiscordPreview() {
                       inline={field.inline}
                       inlineIndex={field.inline ? fieldIndex + 1 : undefined}
                     >
-                      {field.value
-                        .split("\n")
-                        .map((line, i) =>
-                          line ? <p key={i}>{line}</p> : <br key={i} />
-                        )}
+                      <DiscordMarkdown>{field.value}</DiscordMarkdown>
                     </DiscordEmbedField>
                   ))}
                 </DiscordEmbedFields>
