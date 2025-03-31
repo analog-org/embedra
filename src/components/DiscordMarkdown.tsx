@@ -19,6 +19,7 @@ import {
 import { parseText } from "@/lib/parseUtils";
 import { cn } from "@/lib/utils";
 import remarkGfm from "remark-gfm";
+import remarkBreaks from "remark-breaks";
 import hljs from "highlight.js";
 import "./discord-hljs.css";
 
@@ -52,37 +53,33 @@ const CodeBlock: React.FC<{ children: React.ReactNode; className?: string }> = (
 
 const DiscordMarkdown = React.forwardRef<HTMLDivElement, DiscordMarkdownProps>(
   ({ className, children, ...props }, ref) => {
-    // Remove pre-parsing so that Markdown processes the entire raw text:
     const renderMarkdown = (content: string): React.ReactNode => {
+      // Otherwise, use Markdown with custom components
       return (
         <Markdown
           skipHtml
-          remarkPlugins={[[remarkGfm, { singleTilde: false }]]}
+          remarkPlugins={[[remarkGfm, { singleTilde: false }], remarkBreaks]}
           remarkRehypeOptions={{}}
           components={{
             pre({ children }) {
               return (
                 <>
-                  {typeof children === "string"
-                    ? parseText(children)
-                    : children}
+                  {typeof children === "string" ? parseText(children) : children}
                 </>
               );
             },
             code({ children, className, ...rest }) {
-              // If there's no className or it's explicitly "language-" (i.e. triple backticks without a language)
               if (!className) {
                 if(content.includes("```") && content.includes(children as string)) {
                   return <CodeBlock className={className}>{children}</CodeBlock>;
                 }
                 return <DiscordCode>{children}</DiscordCode>;
               }
-              // Otherwise, it's a multi-line code block with a specified language (```js, etc.)
               return <CodeBlock className={className}>{children}</CodeBlock>;
             },
             // Use simpler components to avoid nesting issues
             p: ({ children }) => (
-              <div>
+              <div >
                 {typeof children === "string" ? parseText(children) : children}
               </div>
             ),
@@ -177,6 +174,11 @@ const DiscordMarkdown = React.forwardRef<HTMLDivElement, DiscordMarkdownProps>(
                 {typeof children === "string" ? parseText(children) : children}
               </del>
             ),
+            div: ({ children }) => (
+              <div >
+                {typeof children === "string" ? parseText(children) : children}
+              </div>
+            ),
     
             // add any additional rules as needed
           }}
@@ -185,7 +187,7 @@ const DiscordMarkdown = React.forwardRef<HTMLDivElement, DiscordMarkdownProps>(
         </Markdown>
       );
     };
-
+    
     return (
       <div
         ref={ref}

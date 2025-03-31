@@ -176,7 +176,7 @@ const parserRules: ParserRule[] = [
   },
   // spoiler rule
   {
-    regex: /\|\|([^|]+?)\|\|/g,
+    regex: /\|\|([^|]*?)\|\|/g,
     generator: (match) => (
       <DiscordSpoiler key={`spoiler-${match.index}`}>
         {match[1]}
