@@ -44,6 +44,7 @@ import type {
   APIMessageComponent
 } from 'discord-api-types/v10';
 import { ButtonStyle, ComponentType } from 'discord-api-types/v10';
+import { MarkdownTextarea } from "./ui/markdown-textarea";
 
 export function MessageForm() {
   const message = useStore(messageStore);
@@ -185,7 +186,7 @@ export function MessageForm() {
             <div className="grid gap-4">
               <div className="grid gap-2">
                 <Label htmlFor="content">Content</Label>
-                <Textarea
+                <MarkdownTextarea
                   id="content"
                   value={message.content || ""}
                   onChange={(e) => updateMessageContent(e.target.value)}
