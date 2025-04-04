@@ -122,3 +122,11 @@
     @apply bg-background text-foreground;
   }
 }
+
+@font-face {
+  font-family: 'Twemoji';
+  src: url('https://github.com/Sav22999/emoji/raw/refs/heads/master/font/twemoji.ttf') format('ttf');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
