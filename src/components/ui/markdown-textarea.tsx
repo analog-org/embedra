@@ -163,14 +163,78 @@ export const MarkdownTextarea = React.forwardRef<HTMLTextAreaElement, MarkdownTe
       const text = textarea.value
       const selection = { start, end }
       
-      setActiveFormats({
+      // Check for direct formatting around the selection
+      const formats = {
         bold: hasFormatting(text, selection, { start: "**", end: "**" }),
         italic: hasFormatting(text, selection, { start: "*", end: "*" }),
         code: hasFormatting(text, selection, { start: "```", end: "```" }),
         underline: hasFormatting(text, selection, { start: "__", end: "__" }),
         strikethrough: hasFormatting(text, selection, { start: "~~", end: "~~" }),
         spoiler: hasFormatting(text, selection, { start: "||", end: "||" })
-      })
+      }
+      
+      // Check if we have text selected
+      if (start !== end) {
+        const selectedText = text.substring(start, end);
+        
+        // Check for patterns where the selection includes the formatting characters
+        
+        // Bold: Check if selection is exactly "**text**"
+        formats.bold = formats.bold || /^\*\*.+\*\*$/.test(selectedText);
+        
+        // Italic: Check if selection is exactly "*text*"
+        formats.italic = formats.italic || /^\*.+\*$/.test(selectedText);
+        
+        // Code: Check if selection is exactly "`text`" (inline code) or "```text```" (code block)
+        formats.code = formats.code || /^`.+`$/.test(selectedText) || /^```.+```$/.test(selectedText);
+        
+        // Underline: Check if selection is exactly "__text__"
+        formats.underline = formats.underline || /^__.+__$/.test(selectedText);
+        
+        // Strikethrough: Check if selection is exactly "~~text~~"
+        formats.strikethrough = formats.strikethrough || /^~~.+~~$/.test(selectedText);
+        
+        // Spoiler: Check if selection is exactly "||text||"
+        formats.spoiler = formats.spoiler || /^\|\|.+\|\|$/.test(selectedText);
+        
+        // Handle case where the user selects the entire formatted text including markers
+        // For example: "*text*" is selected entirely
+        if (selectedText.length >= 2) {
+          console.log("Selected text:", selectedText)
+          // Bold
+          if (selectedText.startsWith("**") && selectedText.endsWith("**") && selectedText.length > 4) {
+            formats.bold = true;
+          }
+          // Italic
+          if (selectedText.startsWith("*") && selectedText.endsWith("*") && selectedText.length > 2 && 
+              !(selectedText.startsWith("**") && selectedText.endsWith("**"))) {
+            formats.italic = true;
+          }
+          // Code (inline)
+          if (selectedText.startsWith("`") && selectedText.endsWith("`") && selectedText.length > 2 &&
+              !(selectedText.startsWith("```") && selectedText.endsWith("```"))) {
+            formats.code = true;
+          }
+          // Code block
+          if (selectedText.startsWith("```") && selectedText.endsWith("```") && selectedText.length > 6) {
+            formats.code = true;
+          }
+          // Underline
+          if (selectedText.startsWith("__") && selectedText.endsWith("__") && selectedText.length > 4) {
+            formats.underline = true;
+          }
+          // Strikethrough
+          if (selectedText.startsWith("~~") && selectedText.endsWith("~~") && selectedText.length > 4) {
+            formats.strikethrough = true;
+          }
+          // Spoiler
+          if (selectedText.startsWith("||") && selectedText.endsWith("||") && selectedText.length > 4) {
+            formats.spoiler = true;
+          }
+        }
+      }
+      
+      setActiveFormats(formats);
     }, [])
     
     // Add event listeners to update format state on selection change
