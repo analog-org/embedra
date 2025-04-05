@@ -18,10 +18,12 @@ function EmojiPicker({
   return (
     <EmojiPickerPrimitive.Root
       className={cn(
-        "bg-popover text-popover-foreground isolate flex h-full w-fit flex-col overflow-hidden rounded-md --frimousse-emoji-font-[Twemoji]",
+        "bg-popover text-popover-foreground isolate flex h-full w-fit flex-col overflow-hidden rounded-md",
+        "font-[Twemoji]", // Changed from --frimousse-emoji-font-[Twemoji]
         className
       )}
       data-slot="emoji-picker"
+      style={{ "--frimousse-emoji-font": "Twemoji" } as React.CSSProperties}
       {...props}
     />
   );

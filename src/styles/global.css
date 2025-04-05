@@ -120,12 +120,13 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: 'Twemoji', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   }
 }
 
 @font-face {
   font-family: 'Twemoji';
-  src: url('https://github.com/Sav22999/emoji/raw/refs/heads/master/font/twemoji.ttf') format('ttf');
+  src: url('https://raw.githubusercontent.com/Sav22999/emoji/master/font/twemoji.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
