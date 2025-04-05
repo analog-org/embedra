@@ -122,6 +122,11 @@
     @apply bg-background text-foreground;
     font-family: 'Twemoji', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   }
+  
+  /* Add this utility class for components that need system fonts */
+  .system-font {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;
+  }
 }
 
 @font-face {

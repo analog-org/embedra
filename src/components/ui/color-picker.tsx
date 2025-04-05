@@ -47,10 +47,10 @@ const ColorPicker = React.forwardRef<HTMLDivElement, ColorPickerProps>(
     }, [value]);
 
     return (
-      <div ref={ref} className={cn("grid gap-2", className)} {...props}>
+      <div ref={ref} className={cn("grid gap-2", className)} style={{fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif"}} {...props}>
         {label && <Label>{label}</Label>}
         <Popover>
-          <PopoverTrigger  asChild>
+          <PopoverTrigger asChild>
             <div className="relative w-full">
               <div
                 className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 rounded-sm border pointer-events-none"
@@ -60,11 +60,12 @@ const ColorPicker = React.forwardRef<HTMLDivElement, ColorPickerProps>(
                 value={color.hex}
                 onChange={(e) => handleChange({ ...color, hex: e.target.value })}
                 className="pl-10"
+                style={{fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif"}}
                 readOnly
               />
             </div>
           </PopoverTrigger>
-          <PopoverContent className="w-auto p-4" align="start">
+          <PopoverContent className="w-auto p-4" align="start" style={{fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif"}}>
             <div className="flex flex-col gap-4 w-[200px]">
               <Saturation 
                 height={150} 

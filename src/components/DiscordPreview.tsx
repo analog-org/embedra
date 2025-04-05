@@ -168,7 +168,7 @@ export function DiscordPreview() {
   };
 
   return (
-    <DiscordMessages>
+    <DiscordMessages style={{ fontFamily: "Twemoji, system-ui, -apple-system, BlinkMacSystemFont, sans-serif" }}>
       <DiscordMessage
         author={mockUser.username}
         avatar={mockUser.avatar || undefined}
@@ -177,9 +177,6 @@ export function DiscordPreview() {
         timestamp={previewMessage.timestamp}
       >
         <div>
-          {/* {previewMessage.content
-            .split("\n")
-            .map((line, i) => (line ? <DiscordMarkdown key={i}>{line}</DiscordMarkdown> : <br key={i} />))} */}
           <DiscordMarkdown>{previewMessage.content}</DiscordMarkdown>
         </div>
 

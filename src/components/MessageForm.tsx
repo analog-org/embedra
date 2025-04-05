@@ -575,7 +575,7 @@ export function MessageForm() {
         </Card>
 
         {/* Character Count */}
-        <div className="text-sm text-muted-foreground">
+        <div className="text-sm text-muted-foreground" style={{fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif"}}>
           {calculateMessageLength(message)} / 6000 total characters
         </div>
       </div>

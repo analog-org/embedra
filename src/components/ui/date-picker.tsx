@@ -20,7 +20,7 @@ export function DatePicker({
   disabled = false,
 }: DatePickerProps) {
   return (
-    <div className={cn("grid gap-2", className)}>
+    <div className={cn("grid gap-2", className)} style={{fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif"}}>
       <Popover modal>
         <PopoverTrigger asChild>
           <Button
@@ -30,6 +30,7 @@ export function DatePicker({
               !date && "text-muted-foreground"
             )}
             disabled={disabled}
+            style={{fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif"}}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
             {date ? format(date, "MM/dd/yyyy") : <span>Pick a date</span>}
