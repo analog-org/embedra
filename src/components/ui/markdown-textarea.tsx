@@ -11,7 +11,17 @@ import {
   Underline,
   Strikethrough,
   Eye, // Add the Eye icon for spoilers
+  Smile, // Add Smile icon for emoji picker
 } from "lucide-react";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import {
+  EmojiPicker,
+  EmojiPickerSearch,
+  EmojiPickerContent,
+  EmojiPickerFooter,
+} from "@/components/ui/emoji-picker";
+import { ButtonGroup } from "@/components/ui/button-group";
+import { Button } from "@/components/ui/button";
 
 export interface MarkdownTextareaProps
   extends React.ComponentProps<typeof Textarea> {
@@ -29,6 +39,7 @@ export const MarkdownTextarea = React.forwardRef<
   const [activeFormats, setActiveFormats] = React.useState<
     Record<string, boolean>
   >({});
+  const [emojiPickerOpen, setEmojiPickerOpen] = React.useState(false);
 
   // Ensure our ref works with the forwarded ref
   React.useImperativeHandle(
@@ -320,58 +331,120 @@ export const MarkdownTextarea = React.forwardRef<
   const formatSpoiler = () =>
     toggleFormat({ start: "||", end: "||" }, "spoiler", "spoiler text");
 
+  // Handle emoji selection
+  const handleEmojiSelect = (emoji: { emoji: string }) => {
+    if (!textareaRef.current) return;
+
+    const textarea = textareaRef.current;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const text = textarea.value;
+
+    // Insert emoji at cursor position
+    const newText = text.substring(0, start) + emoji.emoji + text.substring(end);
+
+    // Update textarea value
+    textarea.value = newText;
+
+    // Create synthetic event
+    const event = Object.create(new Event("input", { bubbles: true }));
+    Object.defineProperty(event, "target", { value: textarea });
+
+    setValue(newText);
+
+    if (onChange) {
+      onChange(event as React.ChangeEvent<HTMLTextAreaElement>);
+    }
+
+    // Update cursor position
+    const newPosition = start + emoji.emoji.length;
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(newPosition, newPosition);
+    }, 0);
+
+    // Close the emoji picker
+    setEmojiPickerOpen(false);
+  };
+
   return (
     <div className="flex flex-col gap-2 w-full items-end">
       <div className="flex items-center justify-between w-full">
-        <ToggleGroup
-          type="multiple"
-          className={cn("justify-end", toolbarClassName)}
-          variant="outline"
-          value={Object.keys(activeFormats).filter((key) => activeFormats[key])}
-        >
-          <ToggleGroupItem
-            value="bold"
-            onClick={formatBold}
-            aria-label="Bold text"
+        <ButtonGroup>
+          <ToggleGroup
+            type="multiple"
+            className={cn("justify-end", toolbarClassName)}
+            variant="outline"
+            value={Object.keys(activeFormats).filter((key) => activeFormats[key])}
           >
-            <Bold className="h-4 w-4" />
-          </ToggleGroupItem>
-          <ToggleGroupItem
-            value="italic"
-            onClick={formatItalic}
-            aria-label="Italic text"
-          >
-            <Italic className="h-4 w-4" />
-          </ToggleGroupItem>
-          <ToggleGroupItem
-            value="code"
-            onClick={formatCode}
-            aria-label="Code block"
-          >
-            <Code className="h-4 w-4" />
-          </ToggleGroupItem>
-          <ToggleGroupItem
-            value="underline"
-            onClick={formatUnderline}
-            aria-label="Underlined text"
-          >
-            <Underline className="h-4 w-4" />
-          </ToggleGroupItem>
-          <ToggleGroupItem
-            value="strikethrough"
-            onClick={formatStrikethrough}
-            aria-label="Strikethrough text"
-          >
-            <Strikethrough className="h-4 w-4" />
-          </ToggleGroupItem>
-          <ToggleGroupItem
-            value="spoiler"
-            onClick={formatSpoiler}
-            aria-label="Spoiler text"
-          >
-            <Eye className="h-4 w-4" />
-          </ToggleGroupItem>
-        </ToggleGroup>
+            <ToggleGroupItem
+              value="bold"
+              onClick={formatBold}
+              aria-label="Bold text"
+            >
+              <Bold className="h-4 w-4" />
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              value="italic"
+              onClick={formatItalic}
+              aria-label="Italic text"
+            >
+              <Italic className="h-4 w-4" />
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              value="code"
+              onClick={formatCode}
+              aria-label="Code block"
+            >
+              <Code className="h-4 w-4" />
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              value="underline"
+              onClick={formatUnderline}
+              aria-label="Underlined text"
+            >
+              <Underline className="h-4 w-4" />
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              value="strikethrough"
+              onClick={formatStrikethrough}
+              aria-label="Strikethrough text"
+            >
+              <Strikethrough className="h-4 w-4" />
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              value="spoiler"
+              onClick={formatSpoiler}
+              aria-label="Spoiler text"
+            >
+              <Eye className="h-4 w-4" />
+            </ToggleGroupItem>
+          </ToggleGroup>
+
+          <Popover open={emojiPickerOpen} onOpenChange={setEmojiPickerOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                size="icon"
+                className="rounded-md"
+                aria-label="Insert emoji"
+              >
+                <Smile className="h-4 w-4" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent
+              className="w-auto p-0"
+              sideOffset={5}
+              align="end"
+            >
+              <EmojiPicker onEmojiSelect={handleEmojiSelect}>
+                <EmojiPickerSearch placeholder="Search emoji..." />
+                <EmojiPickerContent className="max-h-[300px]" />
+                <EmojiPickerFooter />
+              </EmojiPicker>
+            </PopoverContent>
+          </Popover>
+        </ButtonGroup>
       </div>
 
       <Textarea
