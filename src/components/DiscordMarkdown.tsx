@@ -191,7 +191,8 @@ const DiscordMarkdown = React.forwardRef<HTMLDivElement, DiscordMarkdownProps>(
     return (
       <div
         ref={ref}
-        className={cn("prose prose-sm max-w-none", className)}
+        className={cn("prose prose-sm max-w-none ", className)}
+        style={{ fontFamily: "Twemoji, system-ui, -apple-system, BlinkMacSystemFont, sans-serif" }}
         {...props}
       >
         {renderMarkdown(children)}
