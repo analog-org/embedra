@@ -127,7 +127,7 @@ function Calendar({
   );
   const _dayButtonClassName = cn(
     buttonVariants({ variant: "ghost" }),
-    "size-8 rounded-md p-0 font-normal transition-none aria-selected:opacity-100",
+    "size-8 rounded-md p-0 font-normal transition-none aria-selected:opacity-100 system-font",
     props.dayButtonClassName
   );
   const buttonRangeClassName =
@@ -167,9 +167,10 @@ function Calendar({
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
-      className={cn("p-3", className)}
+      className={cn("p-3 system-font", className)}
       style={{
         width: 248.8 * (columnsDisplayed ?? 1) + "px",
+        fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
       }}
       classNames={{
         months: _monthsClassName,
@@ -342,7 +343,8 @@ function Nav({
     <nav className={cn("flex items-center", className)}>
       <Button
         variant="outline"
-        className="absolute left-0 h-7 w-7 bg-transparent p-0 opacity-80 hover:opacity-100"
+        className="absolute left-0 h-7 w-7 bg-transparent p-0 opacity-80 hover:opacity-100 system-font"
+        style={{ fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif" }}
         type="button"
         tabIndex={isPreviousDisabled ? undefined : -1}
         disabled={isPreviousDisabled}
@@ -360,7 +362,8 @@ function Nav({
 
       <Button
         variant="outline"
-        className="absolute right-0 h-7 w-7 bg-transparent p-0 opacity-80 hover:opacity-100"
+        className="absolute right-0 h-7 w-7 bg-transparent p-0 opacity-80 hover:opacity-100 system-font"
+        style={{ fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif" }}
         type="button"
         tabIndex={isNextDisabled ? undefined : -1}
         disabled={isNextDisabled}
@@ -393,7 +396,8 @@ function CaptionLabel({
   if (!showYearSwitcher) return <span {...props}>{children}</span>;
   return (
     <Button
-      className="h-7 w-full truncate text-sm font-medium"
+      className="h-7 w-full truncate text-sm font-medium system-font"
+      style={{ fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif" }}
       variant="ghost"
       size="sm"
       onClick={() => setNavView((prev) => (prev === "days" ? "years" : "days"))}
@@ -483,10 +487,11 @@ function YearGrid({
             <Button
               key={i}
               className={cn(
-                "h-7 w-full text-sm font-normal text-foreground",
+                "h-7 w-full text-sm font-normal text-foreground system-font",
                 displayYears.from + i === new Date().getFullYear() &&
                   "bg-accent font-medium text-accent-foreground"
               )}
+              style={{ fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif" }}
               variant="ghost"
               onClick={() => {
                 setNavView("days");

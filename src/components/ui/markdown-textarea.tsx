@@ -13,7 +13,11 @@ import {
   Eye, // Add the Eye icon for spoilers
   Smile, // Add Smile icon for emoji picker
 } from "lucide-react";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
 import {
   EmojiPicker,
   EmojiPickerSearch,
@@ -39,7 +43,7 @@ export const MarkdownTextarea = React.forwardRef<
   const [activeFormats, setActiveFormats] = React.useState<
     Record<string, boolean>
   >({});
-  const [emojiPickerOpen, setEmojiPickerOpen] = React.useState(false);
+  //const [emojiPickerOpen, setEmojiPickerOpen] = React.useState(false);
 
   // Ensure our ref works with the forwarded ref
   React.useImperativeHandle(
@@ -341,7 +345,8 @@ export const MarkdownTextarea = React.forwardRef<
     const text = textarea.value;
 
     // Insert emoji at cursor position
-    const newText = text.substring(0, start) + emoji.emoji + text.substring(end);
+    const newText =
+      text.substring(0, start) + emoji.emoji + text.substring(end);
 
     // Update textarea value
     textarea.value = newText;
@@ -364,64 +369,63 @@ export const MarkdownTextarea = React.forwardRef<
     }, 0);
 
     // Close the emoji picker
-    setEmojiPickerOpen(false);
+    //setEmojiPickerOpen(false);
   };
 
   return (
     <div className="flex flex-col gap-2 w-full items-end">
       <div className="flex items-center justify-between w-full">
-        <ButtonGroup>
-          <ToggleGroup
-            type="multiple"
-            className={cn("justify-end", toolbarClassName)}
-            variant="outline"
-            value={Object.keys(activeFormats).filter((key) => activeFormats[key])}
+        <ToggleGroup
+          type="multiple"
+          className={cn("justify-end", toolbarClassName)}
+          variant="outline"
+          value={Object.keys(activeFormats).filter((key) => activeFormats[key])}
+        >
+          <ToggleGroupItem
+            value="bold"
+            onClick={formatBold}
+            aria-label="Bold text"
           >
-            <ToggleGroupItem
-              value="bold"
-              onClick={formatBold}
-              aria-label="Bold text"
-            >
-              <Bold className="h-4 w-4" />
-            </ToggleGroupItem>
-            <ToggleGroupItem
-              value="italic"
-              onClick={formatItalic}
-              aria-label="Italic text"
-            >
-              <Italic className="h-4 w-4" />
-            </ToggleGroupItem>
-            <ToggleGroupItem
-              value="code"
-              onClick={formatCode}
-              aria-label="Code block"
-            >
-              <Code className="h-4 w-4" />
-            </ToggleGroupItem>
-            <ToggleGroupItem
-              value="underline"
-              onClick={formatUnderline}
-              aria-label="Underlined text"
-            >
-              <Underline className="h-4 w-4" />
-            </ToggleGroupItem>
-            <ToggleGroupItem
-              value="strikethrough"
-              onClick={formatStrikethrough}
-              aria-label="Strikethrough text"
-            >
-              <Strikethrough className="h-4 w-4" />
-            </ToggleGroupItem>
-            <ToggleGroupItem
-              value="spoiler"
-              onClick={formatSpoiler}
-              aria-label="Spoiler text"
-            >
-              <Eye className="h-4 w-4" />
-            </ToggleGroupItem>
-          </ToggleGroup>
-
-          <Popover open={emojiPickerOpen} onOpenChange={setEmojiPickerOpen}>
+            <Bold className="h-4 w-4" />
+          </ToggleGroupItem>
+          <ToggleGroupItem
+            value="italic"
+            onClick={formatItalic}
+            aria-label="Italic text"
+          >
+            <Italic className="h-4 w-4" />
+          </ToggleGroupItem>
+          <ToggleGroupItem
+            value="code"
+            onClick={formatCode}
+            aria-label="Code block"
+          >
+            <Code className="h-4 w-4" />
+          </ToggleGroupItem>
+          <ToggleGroupItem
+            value="underline"
+            onClick={formatUnderline}
+            aria-label="Underlined text"
+          >
+            <Underline className="h-4 w-4" />
+          </ToggleGroupItem>
+          <ToggleGroupItem
+            value="strikethrough"
+            onClick={formatStrikethrough}
+            aria-label="Strikethrough text"
+          >
+            <Strikethrough className="h-4 w-4" />
+          </ToggleGroupItem>
+          <ToggleGroupItem
+            value="spoiler"
+            onClick={formatSpoiler}
+            aria-label="Spoiler text"
+          >
+            <Eye className="h-4 w-4" />
+          </ToggleGroupItem>
+        </ToggleGroup>
+        <ButtonGroup>
+          <Popover>
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
@@ -436,6 +440,7 @@ export const MarkdownTextarea = React.forwardRef<
               className="w-auto p-0"
               sideOffset={5}
               align="end"
+              aria-pressed
             >
               <EmojiPicker onEmojiSelect={handleEmojiSelect}>
                 <EmojiPickerSearch placeholder="Search emoji..." />
